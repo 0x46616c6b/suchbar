@@ -23,7 +23,6 @@ For months the PEGIDA-movement (Patriotic Europeans Against the Islamization of 
 	-facebook.app <appID> \
 	-facebook.secret <appSecret> \
 	-facebook.page <pageID> \
-	-facebook.token="<accessToken>" \
 	-facebook.since 24h
 
 
@@ -41,7 +40,5 @@ For months the PEGIDA-movement (Patriotic Europeans Against the Islamization of 
     	the app secret
       -facebook.since string
     	the earliest date for fetching posts
-      -facebook.token string
-    	the access token for the user
       -facebook.until string
     	the latest date for fetching posts
