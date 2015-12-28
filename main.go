@@ -70,14 +70,14 @@ func main() {
 }
 
 func init() {
-	flag.StringVar(&token, "token", "", "the access token for the user")
-	flag.StringVar(&app, "app", "", "the app id")
-	flag.StringVar(&secret, "secret", "", "the app secret")
-	flag.StringVar(&page, "page", "", "the page id")
-	flag.StringVar(&esHost, "esHost", "http://localhost:9200", "elasticsearch host")
-	flag.StringVar(&since, "since", "", "earliest date for fetching posts")
-	flag.StringVar(&until, "until", "", "latest date for fetching posts")
-	flag.IntVar(&limit, "limit", 100, "limit for fetching posts per iteration")
+	flag.StringVar(&token, "facebook.token", "", "the access token for the user")
+	flag.StringVar(&app, "facebook.app", "", "the app id")
+	flag.StringVar(&secret, "facebook.secret", "", "the app secret")
+	flag.StringVar(&page, "facebook.page", "", "the page id")
+	flag.StringVar(&esHost, "elastic.host", "http://localhost:9200", "the elasticsearch host")
+	flag.StringVar(&since, "facebook.since", "", "the earliest date for fetching posts")
+	flag.StringVar(&until, "facebook.until", "", "the latest date for fetching posts")
+	flag.IntVar(&limit, "facebook.limit", 100, "the limit for fetching posts per iteration")
 	flag.Parse()
 }
 
