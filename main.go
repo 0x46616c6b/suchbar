@@ -6,8 +6,6 @@ import (
 	"os"
 	"strconv"
 
-	"gopkg.in/olivere/elastic.v2"
-
 	"github.com/0x46616c6b/suchbar/fetcher"
 	"github.com/0x46616c6b/suchbar/storage"
 )
@@ -19,7 +17,6 @@ var esHost string
 var since string
 var until string
 var limit int
-var client elastic.Client
 
 func main() {
 	fetcher := fetcher.NewFacebookFetcher(app, secret)
