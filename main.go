@@ -12,7 +12,6 @@ import (
 	"github.com/0x46616c6b/suchbar/storage"
 )
 
-var token string
 var app string
 var secret string
 var page string
@@ -23,7 +22,7 @@ var limit int
 var client elastic.Client
 
 func main() {
-	fetcher := fetcher.NewFacebookFetcher(app, secret, token)
+	fetcher := fetcher.NewFacebookFetcher(app, secret)
 	storage := storage.NewElasticStorage(esHost, page)
 
 	items, err := fetcher.GetPosts(page, buildParams())
@@ -70,7 +69,6 @@ func main() {
 }
 
 func init() {
-	flag.StringVar(&token, "facebook.token", "", "the access token for the user")
 	flag.StringVar(&app, "facebook.app", "", "the app id")
 	flag.StringVar(&secret, "facebook.secret", "", "the app secret")
 	flag.StringVar(&page, "facebook.page", "", "the page id")

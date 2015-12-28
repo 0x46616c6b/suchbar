@@ -25,11 +25,11 @@ type FacebookFetcher struct {
 }
 
 //NewFacebookFetcher return a new FacebookFetcher
-func NewFacebookFetcher(appID, appSecret, accessToken string) *FacebookFetcher {
+func NewFacebookFetcher(appID, appSecret string) *FacebookFetcher {
 	app := facebook.New(appID, appSecret)
 	facebook.Version = FacebookAPIVersion
 
-	return &FacebookFetcher{session: app.Session(accessToken)}
+	return &FacebookFetcher{session: app.Session(app.AppAccessToken())}
 }
 
 //GetPosts return all the posts for a pageID
