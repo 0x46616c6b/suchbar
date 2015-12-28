@@ -50,9 +50,10 @@ func (ff *FacebookFetcher) GetLikes(postID string) ([]facebook.Result, error) {
 	}
 
 	for i, like := range likes {
+		userID := like["id"].(string)
 		likes[i]["post_id"] = fmt.Sprintf("%s", postID)
-		likes[i]["user_id"] = fmt.Sprintf("%s", like["id"].(string))
-		delete(likes[i], "id")
+		likes[i]["user_id"] = fmt.Sprintf("%s", userID)
+		likes[i]["id"] = fmt.Sprintf("%s_%s", postID, userID)
 	}
 
 	return likes, nil

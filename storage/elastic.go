@@ -47,6 +47,7 @@ func (es *ElasticStorage) save(items []facebook.Result, typeName string) error {
 	for _, item := range items {
 		_, err := es.Client.Index().
 			Index(es.Index).
+			Id(item["id"].(string)).
 			Type(typeName).
 			BodyJson(item).
 			Do()
