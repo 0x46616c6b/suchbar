@@ -18,7 +18,13 @@ For months the PEGIDA-movement (Patriotic Europeans Against the Islamization of 
 
 **Usage**
 
-	docker run --rm -it 0x46616c6b/suchbar:latest -elastic.host http://elastic:9200 -facebook.app <appID> -facebook.secret <appSecret> -facebook.page <pageID> -facebook.token="<accessToken>" -facebook.since 24h
+	docker run --rm -it 0x46616c6b/suchbar:latest \
+	-elastic.host http://elastic:9200 \
+	-facebook.app <appID> \
+	-facebook.secret <appSecret> \
+	-facebook.page <pageID> \
+	-facebook.token="<accessToken>" \
+	-facebook.since 24h
 
 
 **CLI Flags**
