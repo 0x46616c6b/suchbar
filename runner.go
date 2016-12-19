@@ -1,6 +1,7 @@
 package main
 
 import (
+	"runtime"
 	"strconv"
 	"sync"
 	"time"
@@ -41,11 +42,12 @@ func (r *Runner) Run() {
 	}
 
 	wg.Wait()
-	log.Printf("Fetching took %s", time.Since(start))
+	log.Printf("Fetching data from all pages took %s", time.Since(start))
 }
 
 func (r *Runner) process(p Page) {
 	log.Printf("Starting process for page %s", p.Alias)
+	start := time.Now()
 
 	items, err := r.Fetcher.GetPosts(p.ID, buildParams())
 	if err != nil {
@@ -70,36 +72,60 @@ func (r *Runner) process(p Page) {
 	}
 
 	r.processPosts(items, p)
+	log.Printf(`Fetching data from "%s" took %s`, p.ID, time.Since(start))
+}
+
+type work struct {
+	item facebook.Result
 }
 
 func (r *Runner) processPosts(items []facebook.Result, p Page) {
-	for _, post := range items {
-		postID := post["id"].(string)
-		log.Debugf("Fetch comments and likes for %s", postID)
+	c := make(chan work, 10)
+	var wg sync.WaitGroup
 
-		comments, err := r.Fetcher.GetComments(postID)
-		if err != nil {
-			log.Error(err)
-		}
-
-		err = r.Storage.SaveComments(comments, p.ID)
-		if err != nil {
-			log.Error(err)
-		}
-
-		log.Debugf("Fetched %d comments", len(comments))
-		likes, err := r.Fetcher.GetLikes(postID)
-		if err != nil {
-			log.Error(err)
-		}
-
-		err = r.Storage.SaveLikes(likes, p.ID)
-		if err != nil {
-			log.Error(err)
-		}
-
-		log.Debugf("Fetched %d likes", len(likes))
+	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for w := range c {
+				postID := w.item["id"].(string)
+				r.processComments(postID, p)
+				r.processLikes(postID, p)
+			}
+			return
+		}()
 	}
+
+	for _, item := range items {
+		c <- work{item}
+	}
+
+	close(c)
+	wg.Wait()
+}
+
+func (r *Runner) processComments(postID string, p Page) {
+	comments, err := r.Fetcher.GetComments(postID)
+	if err != nil {
+		log.Error(err)
+	}
+	err = r.Storage.SaveComments(comments, p.ID)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Debugf("Fetched %d comments", len(comments))
+}
+
+func (r *Runner) processLikes(postID string, p Page) {
+	likes, err := r.Fetcher.GetLikes(postID)
+	if err != nil {
+		log.Error(err)
+	}
+	err = r.Storage.SaveLikes(likes, p.ID)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Debugf("Fetched %d likes", len(likes))
 }
 
 func buildParams() map[string]string {
