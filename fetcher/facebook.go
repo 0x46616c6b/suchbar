@@ -2,21 +2,21 @@ package fetcher
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"strconv"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/huandu/facebook"
 )
 
-//Graph API Verson
+//FacebookAPIVersion holds the Facebook API Version
 const FacebookAPIVersion = "v2.5"
 
-//Default lmit for fetching likes per page
+//FacebookLikesLimit defines the Limit for Paging
 const FacebookLikesLimit = "500"
 
-//Default limit for fetching comments per page
+//FacebookCommentsLimit defines the Limit for Paging
 const FacebookCommentsLimit = FacebookLikesLimit
 
 //FacebookFetcher holds the session from facebook
@@ -73,6 +73,7 @@ func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[stri
 		query.Add("until", strconv.FormatInt(calcTime(val).Unix(), 10))
 	}
 
+	log.Debugf("/%s/%s?%s", pageID, endpoint, query.Encode())
 	result, err := ff.session.Get(fmt.Sprintf("/%s/%s?%s", pageID, endpoint, query.Encode()), nil)
 	if err != nil {
 		return nil, err

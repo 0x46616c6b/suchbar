@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/huandu/facebook"
 	"gopkg.in/olivere/elastic.v2"
 )
@@ -47,13 +48,13 @@ func (es *ElasticStorage) save(items []facebook.Result, typeName string) error {
 	for _, item := range items {
 		_, err := es.Client.Index().
 			Index(es.Index).
-			Id(item["id"].(string)).
 			Type(typeName).
+			Id(item["id"].(string)).
 			BodyJson(item).
 			Do()
 
 		if err != nil {
-			return err
+			log.Error(err)
 		}
 	}
 
