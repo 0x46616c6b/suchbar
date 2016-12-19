@@ -11,34 +11,31 @@ For months the PEGIDA-movement (Patriotic Europeans Against the Islamization of 
 
 **Requirements**
 
-- Docker
+- (Docker)
 - Elasticsearch
 - Facebook Application (needed for appId, appSecret and accessToken)
 
 **Usage**
 
-		docker run --rm -it 0x46616c6b/suchbar:latest \
-		-elastic.host http://elastic:9200 \
-		-facebook.app <appID> \
-		-facebook.secret <appSecret> \
-		-facebook.page <pageID> \
-		-facebook.since 24h
+		go build
+		./suchbar -facebook.since 48h
 
 **CLI Flags**
 
-		-elastic.host string
-		the elasticsearch host (default "http://localhost:9200")
-		-facebook.app string
-		the app id
-		-facebook.limit int
-		the limit for fetching posts per iteration (default 100)
-		-facebook.page string
-		the page id
-		-facebook.secret string
-		the app secret
+		-config string
+		path to the configuration file
 		-facebook.since string
 		the earliest date for fetching posts
 		-facebook.until string
 		the latest date for fetching posts
-		-log.level string
-		log level for logrus (default "info")
+
+**Config**
+
+		app_id: <facebook app id>
+		app_secret: <facebook app secret>
+		elastic_host: http://localhost:9200
+		log_level: info
+		pages:
+		  -
+		    id: 796885057031701
+		    alias: pegida
