@@ -1,9 +1,6 @@
 package storage
 
 import (
-	"fmt"
-	"os"
-
 	log "github.com/Sirupsen/logrus"
 	"github.com/huandu/facebook"
 	"gopkg.in/olivere/elastic.v2"
@@ -19,8 +16,7 @@ type ElasticStorage struct {
 func NewElasticStorage(host, index string) *ElasticStorage {
 	c, err := elastic.NewClient(elastic.SetURL(host), elastic.SetSniff(false))
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	return &ElasticStorage{

@@ -46,6 +46,7 @@ func (ff *FacebookFetcher) GetComments(postID string) ([]facebook.Result, error)
 func (ff *FacebookFetcher) GetLikes(postID string) ([]facebook.Result, error) {
 	likes, err := ff.fetch(postID, "likes", map[string]string{"limit": FacebookLikesLimit})
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
 
@@ -76,11 +77,13 @@ func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[stri
 	log.Debugf("/%s/%s?%s", pageID, endpoint, query.Encode())
 	result, err := ff.session.Get(fmt.Sprintf("/%s/%s?%s", pageID, endpoint, query.Encode()), nil)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
 
 	paging, err := result.Paging(ff.session)
 	if err != nil {
+		log.Error(err)
 		return nil, err
 	}
 
@@ -88,7 +91,7 @@ func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[stri
 
 	for noMore, err := paging.Next(); !noMore; noMore, err = paging.Next() {
 		if err != nil {
-			log.Fatal(err)
+			log.Error(err)
 			break
 		}
 

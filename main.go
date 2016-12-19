@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"os"
 	"strconv"
+	"time"
 
 	"github.com/0x46616c6b/suchbar/fetcher"
 	"github.com/0x46616c6b/suchbar/storage"
@@ -20,17 +20,19 @@ var limit int
 var logLevel string
 
 func main() {
+	log.Printf("Starting suchbar for page %s", page)
+	start := time.Now()
 	fetcher := fetcher.NewFacebookFetcher(app, secret)
 	storage := storage.NewElasticStorage(esHost, page)
 
 	items, err := fetcher.GetPosts(page, buildParams())
 	if err != nil {
-		quit(err)
+		log.Fatal(err)
 	}
 
 	err = storage.SavePosts(items)
 	if err != nil {
-		quit(err)
+		log.Error(err)
 	}
 
 	log.Debugf("Fetched %d posts", len(items))
@@ -42,28 +44,30 @@ func main() {
 
 		comments, err := fetcher.GetComments(postID)
 		if err != nil {
-			quit(err)
+			log.Error(err)
 		}
 
 		err = storage.SaveComments(comments)
 		if err != nil {
-			quit(err)
+			log.Error(err)
 		}
 
 		log.Debugf("Fetched %d comments", len(comments))
 
 		likes, err := fetcher.GetLikes(postID)
 		if err != nil {
-			quit(err)
+			log.Error(err)
 		}
 
 		err = storage.SaveLikes(likes)
 		if err != nil {
-			quit(err)
+			log.Error(err)
 		}
 
 		log.Debugf("Fetched %d likes", len(likes))
 	}
+
+	log.Printf("Fetching took %s", time.Since(start))
 }
 
 func init() {
@@ -75,7 +79,7 @@ func init() {
 	flag.StringVar(&since, "facebook.since", "", "the earliest date for fetching posts")
 	flag.StringVar(&until, "facebook.until", "", "the latest date for fetching posts")
 	flag.IntVar(&limit, "facebook.limit", 100, "the limit for fetching posts per iteration")
-	flag.StringVar(&logLevel, "log.level", "error", "log level for logrus")
+	flag.StringVar(&logLevel, "log.level", "info", "log level for logrus")
 	flag.Parse()
 
 	level, err := log.ParseLevel(logLevel)
@@ -99,9 +103,4 @@ func buildParams() map[string]string {
 	}
 
 	return p
-}
-
-func quit(err error) {
-	log.Fatal(err)
-	os.Exit(1)
 }
