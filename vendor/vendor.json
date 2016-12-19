@@ -1,0 +1,25 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "h5Q1o+kA7VMAR5QpBzVJZbBEgC0=",
+			"path": "github.com/Sirupsen/logrus",
+			"revision": "881bee4e20a5d11a6a88a5667c6f292072ac1963",
+			"revisionTime": "2016-12-02T02:35:07Z"
+		},
+		{
+			"checksumSHA1": "02oTcTm3p6ISNhKAWlHAbHRNvS0=",
+			"path": "github.com/huandu/facebook",
+			"revision": "e7512237e5dc620be55f6bd9ab2d75e7ebbb914c",
+			"revisionTime": "2015-08-17T10:09:54Z"
+		},
+		{
+			"checksumSHA1": "yIRjDqWQ7xGWPP0Ux05GTHTdiTU=",
+			"path": "gopkg.in/olivere/elastic.v2",
+			"revision": "586f65f30d02b99cf9f3f7310b44be0bc77b5b6b",
+			"revisionTime": "2015-12-07T11:05:46Z"
+		}
+	],
+	"rootPath": "github.com/0x46616c6b/suchbar"
+}
