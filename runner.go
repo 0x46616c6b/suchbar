@@ -49,12 +49,18 @@ func (r *Runner) process(p Page) {
 
 	items, err := r.Fetcher.GetPosts(p.ID, buildParams())
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to fetch posts from "%s"`, p.Alias)
 		return
 	}
 	err = r.Storage.SavePosts(items, p.ID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to store posts from "%s"`, p.Alias)
 	}
 	log.Debugf("Fetched %d posts", len(items))
 
