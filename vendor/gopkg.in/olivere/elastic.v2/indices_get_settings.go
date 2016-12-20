@@ -5,21 +5,11 @@
 package elastic
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"net/url"
 	"strings"
 
 	"gopkg.in/olivere/elastic.v2/uritemplates"
-)
-
-var (
-	_ = fmt.Print
-	_ = log.Print
-	_ = strings.Index
-	_ = uritemplates.Expand
-	_ = url.Parse
 )
 
 // IndicesGetSettingsService allows to retrieve settings of one
@@ -177,7 +167,7 @@ func (s *IndicesGetSettingsService) Do() (map[string]*IndicesGetSettingsResponse
 
 	// Return operation response
 	var ret map[string]*IndicesGetSettingsResponse
-	if err := json.Unmarshal(res.Body, &ret); err != nil {
+	if err := s.client.decoder.Decode(res.Body, &ret); err != nil {
 		return nil, err
 	}
 	return ret, nil

@@ -12,7 +12,7 @@ See the [wiki](https://github.com/olivere/elastic/wiki) for additional informati
 
 ## Releases
 
-**Notice that the master branch always refers to the latest version of Elastic. If you want to use stable versions of Elastic, you should use the packages released via [gopkg.in](https://gopkg.in).**
+**The release branches (e.g. [`release-branch.v2`](https://github.com/olivere/elastic/tree/release-branch.v2)) are actively being worked on and can break at any time. If you want to use stable versions of Elastic, please use the packages released via [gopkg.in](https://gopkg.in).**
 
 Here's the version matrix:
 
@@ -24,17 +24,18 @@ Elasticsearch version | Elastic version -| Package URL
 
 **Example:**
 
-You have Elasticsearch 1.7.3 installed and want to use Elastic. As listed above, you should use Elastic 2.0. So you first install Elastic 2.0.
+You have installed Elasticsearch 1.7.4 and want to use Elastic. As listed above, you should use Elastic 2.0. So you first install the stable release of Elastic 2.0 from gopkg.in.
 
 ```sh
 $ go get gopkg.in/olivere/elastic.v2
 ```
 
-Then you use it via the following import path:
+You then import it with this import path:
 
 ```go
 import "gopkg.in/olivere/elastic.v2"
 ```
+
 
 ### Elastic 3.0
 
@@ -149,7 +150,7 @@ for _, item := range searchResult.Each(reflect.TypeOf(ttyp)) {
 fmt.Printf("Found a total of %d tweets\n", searchResult.TotalHits())
 
 // Here's how you iterate through results with full control over each step.
-if searchResult.Hits != nil {
+if searchResult.Hits.TotalHits > 0 {
     fmt.Printf("Found a total of %d tweets\n", searchResult.Hits.TotalHits)
 
     // Iterate through results
@@ -198,7 +199,7 @@ Here's the current API status.
 - [x] Bulk
 - [ ] Bulk UDP
 - [x] Term vectors
-- [ ] Multi term vectors
+- [x] Multi term vectors
 - [x] Count
 - [ ] Validate
 - [x] Explain
@@ -410,6 +411,11 @@ Thanks a lot for the great folks working hard on
 [Elasticsearch](http://www.elasticsearch.org/)
 and
 [Go](http://www.golang.org/).
+
+Elastic uses portions of the
+[uritemplates](https://github.com/jtacoma/uritemplates) library
+by Joshua Tacoma and
+[backoff](https://github.com/cenkalti/backoff) by Cenk Altı.
 
 ## LICENSE
 

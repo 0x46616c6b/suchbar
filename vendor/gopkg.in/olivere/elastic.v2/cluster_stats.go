@@ -5,7 +5,6 @@
 package elastic
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -114,7 +113,7 @@ func (s *ClusterStatsService) Do() (*ClusterStatsResponse, error) {
 
 	// Return operation response
 	ret := new(ClusterStatsResponse)
-	if err := json.Unmarshal(res.Body, ret); err != nil {
+	if err := s.client.decoder.Decode(res.Body, ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
@@ -238,7 +237,7 @@ type ClusterStatsIndicesPercolate struct {
 // ---
 
 type ClusterStatsNodes struct {
-	Count    *ClusterStatsNodesCounts       `json:"counts"`
+	Count    *ClusterStatsNodesCount        `json:"count"`
 	Versions []string                       `json:"versions"`
 	OS       *ClusterStatsNodesOsStats      `json:"os"`
 	Process  *ClusterStatsNodesProcessStats `json:"process"`
@@ -247,7 +246,7 @@ type ClusterStatsNodes struct {
 	Plugins  []*ClusterStatsNodesPlugin     `json:"plugins"`
 }
 
-type ClusterStatsNodesCounts struct {
+type ClusterStatsNodesCount struct {
 	Total      int `json:"total"`
 	MasterOnly int `json:"master_only"`
 	DataOnly   int `json:"data_only"`

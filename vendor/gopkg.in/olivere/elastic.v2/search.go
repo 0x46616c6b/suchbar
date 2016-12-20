@@ -16,16 +16,19 @@ import (
 
 // Search for documents in Elasticsearch.
 type SearchService struct {
-	client       *Client
-	searchSource *SearchSource
-	source       interface{}
-	pretty       bool
-	searchType   string
-	indices      []string
-	queryHint    string
-	routing      string
-	preference   string
-	types        []string
+	client            *Client
+	searchSource      *SearchSource
+	source            interface{}
+	pretty            bool
+	searchType        string
+	indices           []string
+	queryHint         string
+	routing           string
+	preference        string
+	types             []string
+	ignoreUnavailable *bool
+	allowNoIndices    *bool
+	expandWildcards   string
 }
 
 // NewSearchService creates a new service for searching in Elasticsearch.
@@ -73,7 +76,7 @@ func (s *SearchService) Indices(indices ...string) *SearchService {
 	return s
 }
 
-// Type restricts the search for the given type.
+// Type adds a search restriction for the given type.
 func (s *SearchService) Type(typ string) *SearchService {
 	if s.types == nil {
 		s.types = []string{typ}
@@ -83,7 +86,7 @@ func (s *SearchService) Type(typ string) *SearchService {
 	return s
 }
 
-// Types allows to restrict the search to a list of types.
+// Types adds search restrictions for a list of types.
 func (s *SearchService) Types(types ...string) *SearchService {
 	if s.types == nil {
 		s.types = make([]string, 0)
@@ -281,45 +284,55 @@ func (s *SearchService) Fields(fields ...string) *SearchService {
 	return s
 }
 
-// Do executes the search and returns a SearchResult.
-func (s *SearchService) Do() (*SearchResult, error) {
-	// Build url
-	path := "/"
+// IgnoreUnavailable indicates whether the specified concrete indices
+// should be ignored when unavailable (missing or closed).
+func (s *SearchService) IgnoreUnavailable(ignoreUnavailable bool) *SearchService {
+	s.ignoreUnavailable = &ignoreUnavailable
+	return s
+}
 
-	// Indices part
-	indexPart := make([]string, 0)
-	for _, index := range s.indices {
-		index, err := uritemplates.Expand("{index}", map[string]string{
-			"index": index,
+// AllowNoIndices indicates whether to ignore if a wildcard indices
+// expression resolves into no concrete indices. (This includes `_all` string
+// or when no indices have been specified).
+func (s *SearchService) AllowNoIndices(allowNoIndices bool) *SearchService {
+	s.allowNoIndices = &allowNoIndices
+	return s
+}
+
+// ExpandWildcards indicates whether to expand wildcard expression to
+// concrete indices that are open, closed or both.
+func (s *SearchService) ExpandWildcards(expandWildcards string) *SearchService {
+	s.expandWildcards = expandWildcards
+	return s
+}
+
+// buildURL builds the URL for the operation.
+func (s *SearchService) buildURL() (string, url.Values, error) {
+	var err error
+	var path string
+
+	if len(s.indices) > 0 && len(s.types) > 0 {
+		path, err = uritemplates.Expand("/{index}/{type}/_search", map[string]string{
+			"index": strings.Join(s.indices, ","),
+			"type":  strings.Join(s.types, ","),
 		})
-		if err != nil {
-			return nil, err
-		}
-		indexPart = append(indexPart, index)
+	} else if len(s.indices) > 0 {
+		path, err = uritemplates.Expand("/{index}/_search", map[string]string{
+			"index": strings.Join(s.indices, ","),
+		})
+	} else if len(s.types) > 0 {
+		path, err = uritemplates.Expand("/_all/{type}/_search", map[string]string{
+			"type": strings.Join(s.types, ","),
+		})
+	} else {
+		path = "/_search"
 	}
-	path += strings.Join(indexPart, ",")
-
-	// Types part
-	if len(s.types) > 0 {
-		typesPart := make([]string, 0)
-		for _, typ := range s.types {
-			typ, err := uritemplates.Expand("{type}", map[string]string{
-				"type": typ,
-			})
-			if err != nil {
-				return nil, err
-			}
-			typesPart = append(typesPart, typ)
-		}
-		path += "/"
-		path += strings.Join(typesPart, ",")
+	if err != nil {
+		return "", url.Values{}, err
 	}
 
-	// Search
-	path += "/_search"
-
-	// Parameters
-	params := make(url.Values)
+	// Add query string parameters
+	params := url.Values{}
 	if s.pretty {
 		params.Set("pretty", fmt.Sprintf("%v", s.pretty))
 	}
@@ -328,6 +341,38 @@ func (s *SearchService) Do() (*SearchResult, error) {
 	}
 	if s.routing != "" {
 		params.Set("routing", s.routing)
+	}
+	if s.preference != "" {
+		params.Set("preference", s.preference)
+	}
+	if s.allowNoIndices != nil {
+		params.Set("allow_no_indices", fmt.Sprintf("%v", *s.allowNoIndices))
+	}
+	if s.expandWildcards != "" {
+		params.Set("expand_wildcards", s.expandWildcards)
+	}
+	if s.ignoreUnavailable != nil {
+		params.Set("ignore_unavailable", fmt.Sprintf("%v", *s.ignoreUnavailable))
+	}
+	return path, params, nil
+}
+
+// Validate checks if the operation is valid.
+func (s *SearchService) Validate() error {
+	return nil
+}
+
+// Do executes the search and returns a SearchResult.
+func (s *SearchService) Do() (*SearchResult, error) {
+	// Check pre-conditions
+	if err := s.Validate(); err != nil {
+		return nil, err
+	}
+
+	// Get URL for request
+	path, params, err := s.buildURL()
+	if err != nil {
+		return nil, err
 	}
 
 	// Perform request
@@ -344,7 +389,7 @@ func (s *SearchService) Do() (*SearchResult, error) {
 
 	// Return search results
 	ret := new(SearchResult)
-	if err := json.Unmarshal(res.Body, ret); err != nil {
+	if err := s.client.decoder.Decode(res.Body, ret); err != nil {
 		return nil, err
 	}
 	return ret, nil
@@ -446,10 +491,12 @@ type SearchSuggestion struct {
 // SearchSuggestionOption is an option of a SearchSuggestion.
 // See http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-suggesters.html.
 type SearchSuggestionOption struct {
-	Text    string      `json:"text"`
-	Score   float32     `json:"score"`
-	Freq    int         `json:"freq"`
-	Payload interface{} `json:"payload"`
+	Text         string      `json:"text"`
+	Highlighted  string      `json:"highlighted"`
+	Score        float32     `json:"score"`
+	CollateMatch bool        `json:"collate_match"`
+	Freq         int         `json:"freq"` // deprecated
+	Payload      interface{} `json:"payload"`
 }
 
 // Facets
