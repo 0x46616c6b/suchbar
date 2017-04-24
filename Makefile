@@ -7,7 +7,8 @@ GOX_ARGS = -output="$(BUILD_DIR)/{{.Dir}}_{{.OS}}_{{.Arch}}" -osarch="linux/amd6
 
 .PHONY: build
 build:
-	$(GO) build -o $(BUILD_DIR)/suchbar .
+	$(GO) build -o $(BUILD_DIR)/suchbar github.com/0x46616c6b/suchbar/cmd/suchbar
+	$(GO) build -o $(BUILD_DIR)/grafana github.com/0x46616c6b/suchbar/cmd/grafana
 
 .PHONY: clean
 clean:
@@ -20,4 +21,5 @@ test:
 .PHONY: release-build
 release-build:
 	@go get -u github.com/mitchellh/gox
-	@$(GOX) $(GOX_ARGS) github.com/0x46616c6b/suchbar
+	@$(GOX) $(GOX_ARGS) github.com/0x46616c6b/suchbar/cmd/suchbar
+	@$(GOX) $(GOX_ARGS) github.com/0x46616c6b/suchbar/cmd/grafana

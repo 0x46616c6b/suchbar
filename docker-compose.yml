@@ -1,13 +1,13 @@
-version: '2'
+version: '3'
 services:
   elasticsearch:
-    image: elasticsearch:1.7
+    image: "elasticsearch:1.7"
     ports:
-      - 9200:9200
-      - 9300:9300
+          - "9200:9200"
+          - "9300:9300"
   grafana:
-    image: grafana/grafana:latest
+    image: "grafana/grafana:4.0.2"
     ports:
-      - 3000:3000
-    depends_on:
-      - elasticsearch
+      - "3000:3000"
+    links:
+      - "elasticsearch"

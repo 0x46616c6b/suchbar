@@ -22,6 +22,15 @@ deploy:
     - build/suchbar_linux_arm64
     - build/suchbar_windows_386.exe
     - build/suchbar_windows_amd64.exe
+    - build/grafana_darwin_amd64
+    - build/grafana_freebsd_386
+    - build/grafana_freebsd_amd64
+    - build/grafana_linux_386
+    - build/grafana_linux_amd64
+    - build/grafana_linux_arm
+    - build/grafana_linux_arm64
+    - build/grafana_windows_386.exe
+    - build/grafana_windows_amd64.exe
   on:
     repo: 0x46616c6b/suchbar
     tags: true
