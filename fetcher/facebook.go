@@ -74,16 +74,13 @@ func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[stri
 		query.Add("until", strconv.FormatInt(calcTime(val).Unix(), 10))
 	}
 
-	log.Debugf("/%s/%s?%s", pageID, endpoint, query.Encode())
 	result, err := ff.session.Get(fmt.Sprintf("/%s/%s?%s", pageID, endpoint, query.Encode()), nil)
 	if err != nil {
-		log.Error(err)
 		return nil, err
 	}
 
 	paging, err := result.Paging(ff.session)
 	if err != nil {
-		log.Error(err)
 		return nil, err
 	}
 

@@ -15,10 +15,28 @@
 			"revisionTime": "2016-10-27T08:23:06Z"
 		},
 		{
-			"checksumSHA1": "yIRjDqWQ7xGWPP0Ux05GTHTdiTU=",
+			"checksumSHA1": "w5xwoVKwhp3i8rF8czjg6zf1UN8=",
 			"path": "gopkg.in/olivere/elastic.v2",
-			"revision": "586f65f30d02b99cf9f3f7310b44be0bc77b5b6b",
-			"revisionTime": "2015-12-07T11:05:46Z"
+			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
+			"revisionTime": "2016-11-18T12:31:29Z"
+		},
+		{
+			"checksumSHA1": "TYefriikhzyFZ9ynNHgYUjeoHgw=",
+			"path": "gopkg.in/olivere/elastic.v2/backoff",
+			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
+			"revisionTime": "2016-11-18T12:31:29Z"
+		},
+		{
+			"checksumSHA1": "O5dZe+m70S7vbkgePsMLrUc86DA=",
+			"path": "gopkg.in/olivere/elastic.v2/uritemplates",
+			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
+			"revisionTime": "2016-11-18T12:31:29Z"
+		},
+		{
+			"checksumSHA1": "12GqsW8PiRPnezDDy0v4brZrndM=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "a5b47d31c556af34a302ce5d659e6fea44d90de0",
+			"revisionTime": "2016-09-28T15:37:09Z"
 		}
 	],
 	"rootPath": "github.com/0x46616c6b/suchbar"

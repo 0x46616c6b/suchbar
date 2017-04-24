@@ -1,0 +1,15 @@
+app_id: <facebook app id>
+app_secret: <facebook app secret>
+elastic:
+  host: http://localhost:9200
+grafana:
+  host: https://localhost:3000
+  api_key: <grafana api key>
+  elastic_host: http://localhost:9200
+  elastic_version: 1
+log_level: info
+pages:
+  -
+    id: 796885057031701
+    name: PEGIDA # used for grafana dashboard
+    alias: pegida

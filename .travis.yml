@@ -1,0 +1,36 @@
+language: go
+go:
+  - 1.7
+
+script:
+  - make build
+  - make test
+
+before_deploy: make release-build
+
+deploy:
+  provider: releases
+  api_key:
+    secure: cS8BcH+c3hKPeTLxVFa+5zA+VjW8akHZt6VVS3HU2nIMpDsIaMm9eZvx+Ga+4J0xz55f+OTtfhpapISR4NpXnWQh7IK4DULzGZ/Fy/oJFGnlSZUpRClrLqHqiox7MU29ZogKGTRNXSdByh1RROZ7lQbeElfZn1FnovNE3aD+O2R+CT5cYgq/cRVpUdQq9adBmVGoVO336EV1LFep+mDU3/N33dS/SB4O+SWLP8lQw5k4cKr/alcPGBbNpLZO2YNJVCs47Pk+zyDS32AcSgaqAZkCZ5kHIgMVeTxkVw49UKv9Zb2v8NKHaMfzjRQjUjOnnzt2HIV7QqJ+8iC1mfux94sekjZKOajmUMnMuG9DZI8YhVfkKB6/dvvBSJiv3mbsQBPCy9PXuHwI90/DWDCK/1tl4D9A9U5UPjpxbsjaWpBj2kAo/e+BcdpWGqwD1w/glzaK8M0T8S8LZWNDvJAZDywuWdzanZGXgAaHxhM63jPpnxwMtJGckeXe9lhzvAn3v23Xox0nYSKWtLr4Qk+6jXw/j1/SWL22T5WbmlfuZ7UcC6YdatLgAJBBBfgDu7Ohv+OkaAcLWA/3sTuJqvXoXHj5avdeTiKl5dqEx2Nz02uV6L6NipSL2B5e6gtVjeF8qqDGJbAX2BPK1gKp+kG1zyhCnQTAURrxCzOrOJqZIqA=
+  file:
+    - build/suchbar_darwin_amd64
+    - build/suchbar_freebsd_386
+    - build/suchbar_freebsd_amd64
+    - build/suchbar_linux_386
+    - build/suchbar_linux_amd64
+    - build/suchbar_linux_arm
+    - build/suchbar_linux_arm64
+    - build/suchbar_windows_386.exe
+    - build/suchbar_windows_amd64.exe
+    - build/grafana_darwin_amd64
+    - build/grafana_freebsd_386
+    - build/grafana_freebsd_amd64
+    - build/grafana_linux_386
+    - build/grafana_linux_amd64
+    - build/grafana_linux_arm
+    - build/grafana_linux_arm64
+    - build/grafana_windows_386.exe
+    - build/grafana_windows_amd64.exe
+  on:
+    repo: 0x46616c6b/suchbar
+    tags: true
