@@ -1,10 +1,8 @@
-# Suchbar
-
-[![Build Status](https://travis-ci.org/0x46616c6b/suchbar.svg?branch=master)](https://travis-ci.org/0x46616c6b/suchbar)
+# Suchbar [![Build Status](https://travis-ci.org/0x46616c6b/suchbar.svg?branch=master)](https://travis-ci.org/0x46616c6b/suchbar)
 
 ![Logo](http://i.imgur.com/I5mjWip.png)
 
-Suchbar edits the public data of any facebook page, making it possible to browse and analyze it.
+**Suchbar edits the public data of any facebook page, making it possible to browse and analyze it.**
 
 ## Motivation
 
@@ -23,6 +21,12 @@ For months the PEGIDA-movement (Patriotic Europeans Against the Islamization of 
         build/suchbar -facebook.since=48h
         # grafana helper
         build/grafana -config path/to/config -template path/to/dashboard.tpl
+
+### Docker
+
+For more information see the Dockerfile
+
+        docker run -v /path/to/config.yml:/config.yml 0x46616c6b/suchbar
 
 ### Suchbar CLI Flags
 
@@ -56,4 +60,4 @@ For months the PEGIDA-movement (Patriotic Europeans Against the Islamization of 
           -
             id: 796885057031701
             name: PEGIDA # used for grafana dashboard
-            alias: pegida
+            alias: pegida # alias for elasticsearch (human readable alias)
