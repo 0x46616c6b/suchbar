@@ -36,6 +36,8 @@ For more information see the Dockerfile
         the earliest date for fetching posts
         -facebook.until string
         the latest date for fetching posts
+        - facebook.only string
+        fetch only this page id
         
 ### Grafana CLI Flags
 
