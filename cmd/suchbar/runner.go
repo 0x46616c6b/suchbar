@@ -34,6 +34,11 @@ func (r *Runner) Run() {
 	start := time.Now()
 
 	for _, page := range r.Config.Pages {
+		// skip pages when only argument set and not equal to actual page
+		if only != "" && page.ID != only {
+			return
+		}
+
 		wg.Add(1)
 		go func(p Page) {
 			defer wg.Done()
