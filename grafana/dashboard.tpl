@@ -198,7 +198,7 @@
                 ]
               },
               {
-                "content": "Das Dashboard zeigt Informationen von einer Facebook Seite an. Alle 10 Minuten werden diese Informationen aktualisiert. Die Daten werden Ã¼ber die [Graph API](https://developers.facebook.com/docs/graph-api/reference/page/) von Facebook in einer Suchdatenbank abgespeichert. Der [Quelltext](https://github.com/0x46616c6b/suchbar) des Programms ist Open Source.",
+                "content": "Das Dashboard zeigt Informationen von einer Facebook Seite an. Alle 10 Minuten werden diese Informationen aktualisiert. Die Daten werden über die [Graph API](https://developers.facebook.com/docs/graph-api/reference/page/) von Facebook in einer Suchdatenbank abgespeichert. Der [Quelltext](https://github.com/0x46616c6b/suchbar) des Programms ist Open Source.",
                 "editable": true,
                 "error": false,
                 "id": 6,
