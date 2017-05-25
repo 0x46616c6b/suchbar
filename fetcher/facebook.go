@@ -60,6 +60,21 @@ func (ff *FacebookFetcher) GetReactions(postID string) ([]facebook.Result, error
 	return reactions, nil
 }
 
+//GetAttachments returns all the attachments for a postID
+func (ff *FacebookFetcher) GetAttachments(postID string) ([]facebook.Result, error) {
+	attachments, err := ff.fetch(postID, "attachments", map[string]string{})
+	if err != nil {
+		log.Error(err)
+		return nil, err
+	}
+
+	for i := range attachments {
+		attachments[i]["id"] = postID
+	}
+
+	return attachments, nil
+}
+
 func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[string]string) ([]facebook.Result, error) {
 	query := url.Values{}
 

@@ -96,6 +96,7 @@ func (r *Runner) processPosts(items []facebook.Result, p Page) {
 				postID := w.item["id"].(string)
 				r.processComments(postID, p)
 				r.processReactions(postID, p)
+				r.processAttachments(postID, p)
 			}
 			return
 		}()
@@ -131,6 +132,18 @@ func (r *Runner) processReactions(postID string, p Page) {
 		log.Error(err)
 	}
 	log.Debugf("Fetched %d reactions", len(reactions))
+}
+
+func (r *Runner) processAttachments(postID string, p Page) {
+	attachments, err := r.Fetcher.GetAttachments(postID)
+	if err != nil {
+		log.Error(err)
+	}
+	err = r.Storage.SaveAttachments(attachments, p.ID)
+	if err != nil {
+		log.Error(err)
+	}
+	log.Debugf("Fetched %d attachments", len(attachments))
 }
 
 func buildParams() map[string]string {
