@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	Post    = "post"
-	Comment = "comment"
-	Like    = "like"
+	Post     = "post"
+	Comment  = "comment"
+	Like     = "like"
+	Reaction = "reaction"
 )
 
 //ElasticStorage holds the Elastic Client and the Index
@@ -62,9 +63,9 @@ func (es *ElasticStorage) SaveComments(items []facebook.Result, iName string) er
 	return es.save(items, iName, Comment)
 }
 
-//SaveLikes store all the likes.
-func (es *ElasticStorage) SaveLikes(items []facebook.Result, iName string) error {
-	return es.save(items, iName, Like)
+//SaveReactions store all the reactions.
+func (es *ElasticStorage) SaveReactions(items []facebook.Result, iName string) error {
+	return es.save(items, iName, Reaction)
 }
 
 func (es *ElasticStorage) save(items []facebook.Result, iName, tName string) error {

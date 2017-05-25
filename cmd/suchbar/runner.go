@@ -95,7 +95,7 @@ func (r *Runner) processPosts(items []facebook.Result, p Page) {
 			for w := range c {
 				postID := w.item["id"].(string)
 				r.processComments(postID, p)
-				r.processLikes(postID, p)
+				r.processReactions(postID, p)
 			}
 			return
 		}()
@@ -121,16 +121,16 @@ func (r *Runner) processComments(postID string, p Page) {
 	log.Debugf("Fetched %d comments", len(comments))
 }
 
-func (r *Runner) processLikes(postID string, p Page) {
-	likes, err := r.Fetcher.GetLikes(postID)
+func (r *Runner) processReactions(postID string, p Page) {
+	reactions, err := r.Fetcher.GetReactions(postID)
 	if err != nil {
 		log.Error(err)
 	}
-	err = r.Storage.SaveLikes(likes, p.ID)
+	err = r.Storage.SaveReactions(reactions, p.ID)
 	if err != nil {
 		log.Error(err)
 	}
-	log.Debugf("Fetched %d likes", len(likes))
+	log.Debugf("Fetched %d reactions", len(reactions))
 }
 
 func buildParams() map[string]string {

@@ -11,13 +11,13 @@ import (
 )
 
 //FacebookAPIVersion holds the Facebook API Version
-const FacebookAPIVersion = "v2.5"
-
-//FacebookLikesLimit defines the Limit for Paging
-const FacebookLikesLimit = "500"
+const FacebookAPIVersion = "v2.6"
 
 //FacebookCommentsLimit defines the Limit for Paging
-const FacebookCommentsLimit = FacebookLikesLimit
+const FacebookCommentsLimit = "500"
+
+//FacebookReactionsLimit defines the Limit for Paging
+const FacebookReactionsLimit = FacebookCommentsLimit
 
 //FacebookFetcher holds the session from facebook
 type FacebookFetcher struct {
@@ -43,21 +43,21 @@ func (ff *FacebookFetcher) GetComments(postID string) ([]facebook.Result, error)
 }
 
 //GetLikes returns all the likes for a postID
-func (ff *FacebookFetcher) GetLikes(postID string) ([]facebook.Result, error) {
-	likes, err := ff.fetch(postID, "likes", map[string]string{"limit": FacebookLikesLimit})
+func (ff *FacebookFetcher) GetReactions(postID string) ([]facebook.Result, error) {
+	reactions, err := ff.fetch(postID, "reactions", map[string]string{"limit": FacebookReactionsLimit})
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
-	for i, like := range likes {
-		userID := like["id"].(string)
-		likes[i]["post_id"] = fmt.Sprintf("%s", postID)
-		likes[i]["user_id"] = fmt.Sprintf("%s", userID)
-		likes[i]["id"] = fmt.Sprintf("%s_%s", postID, userID)
+	for i, reaction := range reactions {
+		userID := reaction["id"].(string)
+		reactions[i]["post_id"] = fmt.Sprintf("%s", postID)
+		reactions[i]["user_id"] = fmt.Sprintf("%s", userID)
+		reactions[i]["id"] = fmt.Sprintf("%s_%s", postID, userID)
 	}
 
-	return likes, nil
+	return reactions, nil
 }
 
 func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[string]string) ([]facebook.Result, error) {
