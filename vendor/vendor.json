@@ -39,6 +39,12 @@
 			"revisionTime": "2017-05-15T15:52:10Z"
 		},
 		{
+			"checksumSHA1": "pCApZfp2CeDnWbNVsyzNO62ZUXA=",
+			"path": "gopkg.in/olivere/elastic.v5/uritemplates",
+			"revision": "3f49414dc29d45ba96fde19ba72bc646077dbffd",
+			"revisionTime": "2017-05-15T15:52:10Z"
+		},
+		{
 			"checksumSHA1": "12GqsW8PiRPnezDDy0v4brZrndM=",
 			"path": "gopkg.in/yaml.v2",
 			"revision": "a5b47d31c556af34a302ce5d659e6fea44d90de0",
