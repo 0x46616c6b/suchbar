@@ -15,6 +15,12 @@
 			"revisionTime": "2016-10-27T08:23:06Z"
 		},
 		{
+			"checksumSHA1": "rJab1YdNhQooDiBWNnt7TLWPyBU=",
+			"path": "github.com/pkg/errors",
+			"revision": "c605e284fe17294bda444b34710735b29d1a9d90",
+			"revisionTime": "2017-05-05T04:36:39Z"
+		},
+		{
 			"checksumSHA1": "TYefriikhzyFZ9ynNHgYUjeoHgw=",
 			"path": "gopkg.in/olivere/elastic.v2/backoff",
 			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
