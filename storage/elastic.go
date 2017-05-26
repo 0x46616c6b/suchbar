@@ -3,7 +3,8 @@ package storage
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/huandu/facebook"
-	"gopkg.in/olivere/elastic.v2"
+	"gopkg.in/olivere/elastic.v5"
+	"context"
 )
 
 const (
@@ -16,6 +17,7 @@ const (
 //ElasticStorage holds the Elastic Client and the Index
 type ElasticStorage struct {
 	Client *elastic.Client
+	Ctx    context.Context
 }
 
 //NewElasticStorage returns a new ElasticStorage
@@ -27,25 +29,24 @@ func NewElasticStorage(host string) *ElasticStorage {
 
 	return &ElasticStorage{
 		Client: c,
+		Ctx:    context.Background(),
 	}
 }
 
 //EnsureAlias creates an alias for an index if their not exists
 func (es *ElasticStorage) EnsureAlias(index, alias string) error {
-	chk, err := es.Client.Aliases().
-		Indices(index, alias).
-		Do()
+	chk, err := es.Client.Aliases().Do(es.Ctx)
 	if err != nil {
 		return err
 	}
 
-	if len(chk.Indices) == 2 {
+	if len(chk.IndicesByAlias(alias)) == 1 {
 		return nil
 	}
 
 	_, err = es.Client.Alias().
 		Add(index, alias).
-		Do()
+		Do(es.Ctx)
 	if err != nil {
 		return err
 	}
@@ -80,7 +81,7 @@ func (es *ElasticStorage) save(items []facebook.Result, iName, tName string) err
 			Type(tName).
 			Id(item["id"].(string)).
 			BodyJson(item).
-			Do()
+			Do(es.Ctx)
 
 		if err != nil {
 			log.Error(err)

@@ -15,12 +15,6 @@
 			"revisionTime": "2016-10-27T08:23:06Z"
 		},
 		{
-			"checksumSHA1": "w5xwoVKwhp3i8rF8czjg6zf1UN8=",
-			"path": "gopkg.in/olivere/elastic.v2",
-			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
-			"revisionTime": "2016-11-18T12:31:29Z"
-		},
-		{
 			"checksumSHA1": "TYefriikhzyFZ9ynNHgYUjeoHgw=",
 			"path": "gopkg.in/olivere/elastic.v2/backoff",
 			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
@@ -31,6 +25,12 @@
 			"path": "gopkg.in/olivere/elastic.v2/uritemplates",
 			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
 			"revisionTime": "2016-11-18T12:31:29Z"
+		},
+		{
+			"checksumSHA1": "jOAJJMO3K2jcr9e5QDP+ehk/3fE=",
+			"path": "gopkg.in/olivere/elastic.v5",
+			"revision": "3f49414dc29d45ba96fde19ba72bc646077dbffd",
+			"revisionTime": "2017-05-15T15:52:10Z"
 		},
 		{
 			"checksumSHA1": "12GqsW8PiRPnezDDy0v4brZrndM=",
