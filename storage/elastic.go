@@ -5,6 +5,7 @@ import (
 	"github.com/huandu/facebook"
 	"gopkg.in/olivere/elastic.v5"
 	"context"
+	"time"
 )
 
 const (
@@ -75,18 +76,38 @@ func (es *ElasticStorage) SaveAttachments(items []facebook.Result, iName string)
 }
 
 func (es *ElasticStorage) save(items []facebook.Result, iName, tName string) error {
+	bulkRequest := es.Client.Bulk()
+
 	for _, item := range items {
-		_, err := es.Client.Index().
+		req := elastic.NewBulkIndexRequest().
 			Index(iName).
 			Type(tName).
 			Id(item["id"].(string)).
-			BodyJson(item).
-			Do(es.Ctx)
+			Doc(item)
 
-		if err != nil {
-			log.Error(err)
-		}
+		bulkRequest.Add(req)
 	}
+
+	start := time.Now()
+	bulkResponse, err := bulkRequest.Do(es.Ctx)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"index": iName,
+			"type":  tName,
+			"items": len(items),
+			"error": err,
+		}).Error(`Elasticsearch`)
+
+		return err
+	}
+
+	log.WithFields(log.Fields{
+		"duration": time.Since(start),
+		"index":    iName,
+		"type":     tName,
+		"items":    len(items),
+		"created":  len(bulkResponse.Created()),
+	}).Debug("Elasticsearch Save")
 
 	return nil
 }
