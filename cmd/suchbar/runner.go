@@ -89,7 +89,8 @@ func (r *Runner) process(p Page) {
 		log.WithFields(log.Fields{
 			"error": err,
 			"page":  p.ID,
-		}).Errorf(`Failed to store posts from "%s"`, p.Alias)
+		}).Errorf(`Failed to save posts from "%s"`, p.Alias)
+		return
 	}
 	r.setPostsCounter(p, len(items))
 
@@ -121,9 +122,9 @@ func (r *Runner) processPosts(items []facebook.Result, p Page) {
 			defer wg.Done()
 			for w := range c {
 				postID := w.item["id"].(string)
+				r.processAttachments(postID, p)
 				r.processComments(postID, p)
 				r.processReactions(postID, p)
-				r.processAttachments(postID, p)
 			}
 			return
 		}()
@@ -140,11 +141,19 @@ func (r *Runner) processPosts(items []facebook.Result, p Page) {
 func (r *Runner) processComments(postID string, p Page) {
 	comments, err := r.Fetcher.GetComments(postID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to fetch comments from "%s"`, p.Alias)
+		return
 	}
 	err = r.Storage.SaveComments(comments, p.ID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to save comments from "%s"`, p.Alias)
+		return
 	}
 	r.setCommentsCounter(p, len(comments))
 }
@@ -152,11 +161,19 @@ func (r *Runner) processComments(postID string, p Page) {
 func (r *Runner) processReactions(postID string, p Page) {
 	reactions, err := r.Fetcher.GetReactions(postID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to fetch reactions from "%s"`, p.Alias)
+		return
 	}
 	err = r.Storage.SaveReactions(reactions, p.ID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to save reactions from "%s"`, p.Alias)
+		return
 	}
 	r.setReactionsCounter(p, len(reactions))
 }
@@ -164,11 +181,19 @@ func (r *Runner) processReactions(postID string, p Page) {
 func (r *Runner) processAttachments(postID string, p Page) {
 	attachments, err := r.Fetcher.GetAttachments(postID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to fetch attachments from "%s"`, p.Alias)
+		return
 	}
 	err = r.Storage.SaveAttachments(attachments, p.ID)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to save attachments from "%s"`, p.Alias)
+		return
 	}
 	r.setAttachmentsCounter(p, len(attachments))
 }
