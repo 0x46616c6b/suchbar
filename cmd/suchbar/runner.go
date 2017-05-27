@@ -8,30 +8,53 @@ import (
 
 	"github.com/0x46616c6b/suchbar/fetcher"
 	"github.com/0x46616c6b/suchbar/storage"
-	log "github.com/Sirupsen/logrus"
+	"github.com/fatih/color"
 	"github.com/huandu/facebook"
+	log "github.com/Sirupsen/logrus"
 )
+
+const POST = "post"
+const COMMENT = "comment"
+const REACTION = "reaction"
+const ATTACHMENT = "attachment"
 
 //Runner contains the Storage, Fetcher and Configs
 type Runner struct {
 	Fetcher *fetcher.FacebookFetcher
 	Storage *storage.ElasticStorage
 	Config  Config
+	Results map[string]PageResult
+}
+
+type PageResult struct {
+	Duration    time.Duration
+	Posts       int
+	Comments    int
+	Reactions   int
+	Attachments int
 }
 
 //NewRunner creates an instance of Runner
 func NewRunner(c Config) *Runner {
+	// initialize PageResult map
+	results := map[string]PageResult{}
+	for _, page := range c.Pages {
+		results[page.ID] = PageResult{}
+	}
+
 	return &Runner{
 		Fetcher: fetcher.NewFacebookFetcher(c.AppID, c.AppSecret),
 		Storage: storage.NewElasticStorage(c.Elastic.Host),
 		Config:  c,
+		Results: results,
 	}
 }
 
 //Run starts the Fetcher and stores the Data
 func (r *Runner) Run() {
-	var wg sync.WaitGroup
+	log.WithFields(log.Fields{"since": since, "until": until, "limit": limit}).Info("Start fetching pages")
 	start := time.Now()
+	wg := sync.WaitGroup{}
 
 	for _, page := range r.Config.Pages {
 		// skip pages when only argument set and not equal to actual page
@@ -47,11 +70,10 @@ func (r *Runner) Run() {
 	}
 
 	wg.Wait()
-	log.Printf("Fetching data from all pages took %s", time.Since(start))
+	log.Infof("Duration (Total): %s", time.Since(start))
 }
 
 func (r *Runner) process(p Page) {
-	log.Printf("Starting process for page %s", p.Alias)
 	start := time.Now()
 
 	items, err := r.Fetcher.GetPosts(p.ID, buildParams())
@@ -69,7 +91,7 @@ func (r *Runner) process(p Page) {
 			"page":  p.ID,
 		}).Errorf(`Failed to store posts from "%s"`, p.Alias)
 	}
-	log.Debugf("Fetched %d posts", len(items))
+	r.setPostsCounter(p, len(items))
 
 	err = r.Storage.EnsureAlias(p.ID, p.Alias)
 	if err != nil {
@@ -77,7 +99,9 @@ func (r *Runner) process(p Page) {
 	}
 
 	r.processPosts(items, p)
-	log.Printf(`Fetching data from "%s" took %s`, p.ID, time.Since(start))
+	r.setDuration(p, time.Since(start))
+
+	r.printResults(p)
 }
 
 type work struct {
@@ -119,7 +143,7 @@ func (r *Runner) processComments(postID string, p Page) {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Debugf("Fetched %d comments", len(comments))
+	r.setCommentsCounter(p, len(comments))
 }
 
 func (r *Runner) processReactions(postID string, p Page) {
@@ -131,7 +155,7 @@ func (r *Runner) processReactions(postID string, p Page) {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Debugf("Fetched %d reactions", len(reactions))
+	r.setReactionsCounter(p, len(reactions))
 }
 
 func (r *Runner) processAttachments(postID string, p Page) {
@@ -143,7 +167,69 @@ func (r *Runner) processAttachments(postID string, p Page) {
 	if err != nil {
 		log.Error(err)
 	}
-	log.Debugf("Fetched %d attachments", len(attachments))
+	r.setAttachmentsCounter(p, len(attachments))
+}
+
+func (r *Runner) setPostsCounter(p Page, c int) {
+	r.setResultsCounter(p, POST, c)
+}
+
+func (r *Runner) setCommentsCounter(p Page, c int) {
+	r.setResultsCounter(p, COMMENT, c)
+}
+
+func (r *Runner) setReactionsCounter(p Page, c int) {
+	r.setResultsCounter(p, REACTION, c)
+}
+
+func (r *Runner) setAttachmentsCounter(p Page, c int) {
+	r.setResultsCounter(p, ATTACHMENT, c)
+}
+
+func (r *Runner) setDuration(p Page, d time.Duration) {
+	if _, ok := r.Results[p.ID]; ok {
+		results := r.Results[p.ID]
+		results.Duration = d
+
+		r.Results[p.ID] = results
+	}
+}
+
+func (r *Runner) printResults(p Page) {
+	if _, ok := r.Results[p.ID]; ok {
+		results := r.Results[p.ID]
+		fields := log.Fields{
+			"duration":    results.Duration,
+			"posts":       results.Posts,
+			"comments":    results.Comments,
+			"reactions":   results.Reactions,
+			"attachments": results.Attachments,
+		}
+
+		red := color.New(color.FgRed).SprintFunc()
+		log.WithFields(fields).Infof("Statistics for %s", red(p.Alias))
+	}
+}
+
+func (r *Runner) setResultsCounter(p Page, name string, count int) {
+	if _, ok := r.Results[p.ID]; ok {
+		results := r.Results[p.ID]
+		switch name {
+		case POST:
+			results.Posts = results.Posts + count
+			break
+		case COMMENT:
+			results.Comments = results.Comments + count
+			break
+		case REACTION:
+			results.Reactions = results.Reactions + count
+			break
+		case ATTACHMENT:
+			results.Attachments = results.Attachments + count
+		}
+
+		r.Results[p.ID] = results
+	}
 }
 
 func buildParams() map[string]string {
