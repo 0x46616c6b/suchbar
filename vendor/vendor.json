@@ -21,18 +21,6 @@
 			"revisionTime": "2017-05-05T04:36:39Z"
 		},
 		{
-			"checksumSHA1": "TYefriikhzyFZ9ynNHgYUjeoHgw=",
-			"path": "gopkg.in/olivere/elastic.v2/backoff",
-			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
-			"revisionTime": "2016-11-18T12:31:29Z"
-		},
-		{
-			"checksumSHA1": "O5dZe+m70S7vbkgePsMLrUc86DA=",
-			"path": "gopkg.in/olivere/elastic.v2/uritemplates",
-			"revision": "4f4a971f9bff46f4a26e5bd3e889197c1659b112",
-			"revisionTime": "2016-11-18T12:31:29Z"
-		},
-		{
 			"checksumSHA1": "jOAJJMO3K2jcr9e5QDP+ehk/3fE=",
 			"path": "gopkg.in/olivere/elastic.v5",
 			"revision": "3f49414dc29d45ba96fde19ba72bc646077dbffd",
