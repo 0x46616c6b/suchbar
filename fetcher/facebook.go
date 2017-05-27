@@ -89,7 +89,10 @@ func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[stri
 		query.Add("until", strconv.FormatInt(calcTime(val).Unix(), 10))
 	}
 
-	result, err := ff.session.Get(fmt.Sprintf("/%s/%s?%s", pageID, endpoint, query.Encode()), nil)
+	path := fmt.Sprintf("/%s/%s?%s", pageID, endpoint, query.Encode())
+	start := time.Now()
+	result, err := ff.session.Get(path, nil)
+	duration := time.Since(start)
 	if err != nil {
 		return nil, err
 	}
@@ -100,12 +103,29 @@ func (ff *FacebookFetcher) fetch(pageID string, endpoint string, params map[stri
 	}
 
 	items := paging.Data()
+	log.WithFields(log.Fields{
+		"endpoint": endpoint,
+		"duration": duration,
+		"items":    len(items),
+		"path":     path,
+		"page":     pageID,
+	}).Debug(`Facebook Fetch`)
 
 	for noMore, err := paging.Next(); !noMore; noMore, err = paging.Next() {
 		if err != nil {
-			log.Error(err)
+			log.WithFields(log.Fields{
+				"error": err,
+				"page":  pageID,
+			}).Error(`Error fetching more data`)
 			break
 		}
+
+		log.WithFields(log.Fields{
+			"endpoint": endpoint,
+			"items":    len(paging.Data()),
+			"path":     path,
+			"page":     pageID,
+		}).Debug(`Facebook Fetch Paging`)
 
 		items = append(items, paging.Data()...)
 	}
