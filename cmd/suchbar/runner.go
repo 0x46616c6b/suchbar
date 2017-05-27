@@ -95,7 +95,10 @@ func (r *Runner) process(p Page) {
 
 	err = r.Storage.EnsureAlias(p.ID, p.Alias)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{
+			"error": err,
+			"page":  p.ID,
+		}).Errorf(`Failed to create alias for "%s"`, p.Alias)
 	}
 
 	r.processPosts(items, p)
