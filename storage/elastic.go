@@ -76,6 +76,11 @@ func (es *ElasticStorage) SaveAttachments(items []facebook.Result, iName string)
 }
 
 func (es *ElasticStorage) save(items []facebook.Result, iName, tName string) error {
+	if len(items) == 0 {
+		// nothing to process here
+		return nil
+	}
+
 	bulkRequest := es.Client.Bulk()
 
 	for _, item := range items {
