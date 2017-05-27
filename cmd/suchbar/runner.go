@@ -56,6 +56,19 @@ func (r *Runner) Run() {
 	start := time.Now()
 	wg := sync.WaitGroup{}
 
+	if log.GetLevel() == log.DebugLevel {
+		yellow := color.New(color.FgYellow).SprintFunc()
+		go func() {
+			for {
+				log.WithFields(log.Fields{
+					"NumGoroutine": runtime.NumGoroutine(),
+					"NumCgoCall":   runtime.NumCgoCall(),
+				}).Debugf(`%s`, yellow(`Runtime Stats`))
+				time.Sleep(time.Second * 2)
+			}
+		}()
+	}
+
 	for _, page := range r.Config.Pages {
 		// skip pages when only argument set and not equal to actual page
 		if only != "" && page.ID != only {
