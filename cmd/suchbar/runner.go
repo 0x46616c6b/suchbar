@@ -52,7 +52,11 @@ func NewRunner(c Config) *Runner {
 
 //Run starts the Fetcher and stores the Data
 func (r *Runner) Run() {
-	log.WithFields(log.Fields{"since": since, "until": until, "limit": limit}).Info("Start fetching pages")
+	log.WithFields(log.Fields{
+		"since": since,
+		"until": until,
+		"limit": limit,
+	}).Info("Start fetching pages")
 	start := time.Now()
 	wg := sync.WaitGroup{}
 
