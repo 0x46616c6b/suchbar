@@ -1,15 +1,15 @@
 package grafana
 
 import (
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 )
 
 type Datasource struct {
-	ID                int `json:"id"`
-	OrgID             int `json:"orgId"`
+	ID                int    `json:"id"`
+	OrgID             int    `json:"orgId"`
 	Name              string `json:"name"`
 	Type              string `json:"type"`
 	TypeLogoURL       string `json:"typeLogoUrl"`
@@ -18,11 +18,11 @@ type Datasource struct {
 	Password          string `json:"password"`
 	User              string `json:"user"`
 	Database          string `json:"database"`
-	BasicAuth         bool `json:"basicAuth"`
+	BasicAuth         bool   `json:"basicAuth"`
 	BasicAuthUser     string `json:"basicAuthUser"`
 	BasicAuthPassword string `json:"basicAuthPassword"`
-	WithCredentials   bool `json:"withCredentials"`
-	IsDefault         bool `json:"isDefault"`
+	WithCredentials   bool   `json:"withCredentials"`
+	IsDefault         bool   `json:"isDefault"`
 }
 
 func (c *Client) CreateDatasource(options map[string]interface{}) (Datasource, error) {

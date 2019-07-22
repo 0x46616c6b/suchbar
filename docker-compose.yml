@@ -3,8 +3,8 @@ services:
   elasticsearch:
     image: "elasticsearch:5.4"
     ports:
-          - "9200:9200"
-          - "9300:9300"
+      - "9200:9200"
+      - "9300:9300"
   grafana:
     image: "grafana/grafana:4.3.1"
     ports:

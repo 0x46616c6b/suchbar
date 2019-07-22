@@ -18,14 +18,14 @@ type Grafana struct {
 	Host           string `yaml:"host"`
 	APIKey         string `yaml:"api_key"`
 	ElasticHost    string `yaml:"elastic_host"`
-	ElasticVersion int `yaml:"elastic_version"`
+	ElasticVersion int    `yaml:"elastic_version"`
 }
 
 //Config contains all Configuration values for suchbar
 type Config struct {
 	Grafana  Grafana `yaml:"grafana"`
-	LogLevel string `yaml:"log_level"`
-	Pages    []Page `yaml:"pages"`
+	LogLevel string  `yaml:"log_level"`
+	Pages    []Page  `yaml:"pages"`
 }
 
 func (c *Config) read(path string) {

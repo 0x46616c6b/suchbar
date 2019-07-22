@@ -1,12 +1,13 @@
 package main
 
 import (
-	"flag"
-	"text/template"
-	"io/ioutil"
 	"bytes"
+	"flag"
+	"io/ioutil"
+	"text/template"
 
 	log "github.com/Sirupsen/logrus"
+
 	"github.com/0x46616c6b/suchbar/grafana"
 )
 

@@ -1,10 +1,10 @@
 package grafana
 
 import (
-	"encoding/json"
 	"bytes"
-	"io/ioutil"
+	"encoding/json"
 	"errors"
+	"io/ioutil"
 )
 
 type Dashboard struct {
