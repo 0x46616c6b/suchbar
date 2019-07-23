@@ -6,11 +6,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/0x46616c6b/suchbar/fetcher"
-	"github.com/0x46616c6b/suchbar/storage"
+	log "github.com/Sirupsen/logrus"
 	"github.com/fatih/color"
 	"github.com/huandu/facebook"
-	log "github.com/Sirupsen/logrus"
+
+	"github.com/0x46616c6b/suchbar/fetcher"
+	"github.com/0x46616c6b/suchbar/storage"
 )
 
 const POST = "post"

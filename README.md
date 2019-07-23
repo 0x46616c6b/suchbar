@@ -1,4 +1,4 @@
-# Suchbar [![Build Status](https://travis-ci.org/0x46616c6b/suchbar.svg?branch=master)](https://travis-ci.org/0x46616c6b/suchbar)
+# Suchbar [![Build Status](https://travis-ci.com/0x46616c6b/suchbar.svg?branch=master)](https://travis-ci.com/0x46616c6b/suchbar)
 
 ![Logo](http://i.imgur.com/I5mjWip.png)
 

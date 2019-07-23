@@ -26,12 +26,12 @@ type Elastic struct {
 
 //Config contains all Configuration values for suchbar
 type Config struct {
-	AppID     string `yaml:"app_id"`
-	AppSecret string `yaml:"app_secret"`
+	AppID     string  `yaml:"app_id"`
+	AppSecret string  `yaml:"app_secret"`
 	Elastic   Elastic `yaml:"elastic"`
 	Grafana   Grafana `yaml:"grafana"`
-	LogLevel  string `yaml:"log_level"`
-	Pages     []Page `yaml:"pages"`
+	LogLevel  string  `yaml:"log_level"`
+	Pages     []Page  `yaml:"pages"`
 }
 
 func (c *Config) read(path string) {

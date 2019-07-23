@@ -1,11 +1,12 @@
 package storage
 
 import (
+	"context"
+	"time"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/huandu/facebook"
 	"gopkg.in/olivere/elastic.v5"
-	"context"
-	"time"
 )
 
 const (
